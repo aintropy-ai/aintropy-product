@@ -10,7 +10,8 @@ Central hub for all AIntropy links, repos, and product tracking.
 |---------|-----|--------|
 | AIntropy Website | https://aintropy.ai | ✅ Live |
 | Kurious — NJ Open Data Demo | https://aintropy.ai/nj_demo | ✅ Live |
-| Kurious — Live Chat (NJ Open Data) | https://njopendata.aintropy.ai/chat | ✅ Live |
+| Kurious — Live Chat (NJ Open Data) | https://njopendata.aintropy.ai | ✅ Live |
+| Pharma Demo | https://aintropy.ai/index_demo | ✅ Live |
 | AIntropy Blog | https://aintropy.ai/blog | 🚧 Pending approval |
 
 ---
