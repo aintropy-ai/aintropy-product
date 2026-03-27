@@ -17,13 +17,14 @@ Over time Kurious learns the patterns — it understands how the organisation th
 
 ## The Problem
 
-People inside large organisations lose days, weeks, sometimes months looking for information they know exists somewhere. It is not that the data is missing. It is that getting to it is so hard that most people either:
+People inside large organisations lose days, weeks, sometimes months looking for information they know exists somewhere. The data is there. The problem is getting to it.
 
+**What people do today instead of having Kurious:**
 - Ask IT and wait days for a report
-- Search manually across disconnected systems
+- Search manually across disconnected systems for hours
 - Make decisions with incomplete information
 - Hire consultants to dig through data for them
-- Give up entirely
+- Give up and move on with the wrong answer
 
 The cost is not just time. It is wrong decisions, missed opportunities, delayed action, and billions of dollars of data that nobody can actually use.
 
@@ -31,89 +32,132 @@ The cost is not just time. It is wrong decisions, missed opportunities, delayed 
 
 ---
 
-## Why Kurious Solves It
+## Why Kurious Solves It Uniquely
 
-- Integrates where the data already lives — no migration, no data ever leaves
-- Reads across every source and format simultaneously — documents, spreadsheets, databases, video, images
-- Returns the exact answer with the exact source — not a hallucination, not a summary
-- Works for a business user — no technical knowledge required
-- Gets smarter over time — learns the organisation's patterns and workflows
+| The problem | How Kurious solves it |
+|-------------|----------------------|
+| Data is in 10 different systems | Kurious integrates with all of them simultaneously |
+| Data is in different formats | Kurious reads documents, spreadsheets, databases, video, images |
+| Answers require connecting data across silos | Kurious retrieves across all sources in a single query |
+| Business users cannot use technical tools | Kurious works in plain language — no training required |
+| Enterprises cannot send data to third parties | Kurious integrates where the data lives — nothing ever moves |
+| AI tools hallucinate | Every Kurious answer comes with the exact source — verifiable in one click |
 
 ---
 
 ## The Two Users
 
 ### Primary — The Business User
-A busy person inside a large organisation. Strategy, operations, finance, legal, compliance. Not technical. Does not have time. Needs an answer, not a tool.
+A busy person inside a large organisation. Strategy, operations, finance, legal, compliance, consulting. Not technical. Does not have time. Needs an answer, not a tool.
 
 **Their day today:** Ask someone, wait. Search manually, get lost. Use incomplete data, make a risky decision.
 
 **Their day with Kurious:** Ask in plain language. Get the answer in seconds. See exactly where it came from. Move on.
 
 ### Secondary — The Engineer / Developer
-Builds on top of Kurious. Uses the API, selects retrieval algorithms, integrates into existing workflows. Wants control, transparency, and performance.
+Builds on top of Kurious. Uses the API, selects retrieval algorithms (Vibe-Discovery), integrates into existing workflows. Wants control, transparency, and performance.
 
 ---
 
-## Target Customers — In Order
+## Target Customers — In Priority Order
 
-| Priority | Vertical | Why First |
-|----------|----------|-----------|
-| 🥇 **Consulting firms** | Strategy, management, research consultancies | Their business *is* finding and synthesising information. Immediate value. Fast decisions. Can move in weeks. |
-| 🥈 **Legal** | Mid-size law firms | Lawyers bill by the hour. Finding precedents, contracts, case history costs them real money. Data never leaving is critical — attorney-client privilege. |
-| 🥉 **Finance** | Asset managers, risk teams, compliance | Drowning in data. Wrong or delayed decisions are extremely costly. |
-| 4 | **Government** | Proven by NJ demo. Highest pain but longest sales cycle. |
-| 5 | **Enterprise (PayPal-scale)** | Biggest budget. Hardest to close fast. Build toward this. |
+### Why enterprise, not consumer
+Kurious is at its best when the data is massive, fragmented, and multimodal. That is an enterprise problem. Only enterprises have millions of records across formats and systems. Consumer users do not have this problem at this scale — enterprise is the primary customer, always.
 
----
-
-## What Makes Kurious Different
-
-| What competitors do | What Kurious does |
-|--------------------|-------------------|
-| General AI that guesses from training data | Reads your actual data, returns verified answers |
-| Takes your data to their servers | Integrates where your data lives — never moves it |
-| Returns an answer | Returns an answer + exact source + retrieval steps |
-| Works for technical users | Works for any business user |
-| Static — same forever | Learns your organisation's patterns over time |
-
-**The one sentence no competitor can say:**
-
-> "We never see your data. We never move your data. We just make it answerable."
+| Priority | Vertical | Why | Sales speed |
+|----------|----------|-----|-------------|
+| 🥇 **Consulting firms** | Strategy, management, research | Their business *is* finding and synthesising information. Immediate value. Fast decisions. | Weeks |
+| 🥈 **Legal** | Mid-size law firms | Lawyers bill by the hour. Finding precedents, contracts, case history costs real money. Data privacy is critical. | 4–6 weeks |
+| 🥉 **Finance** | Asset managers, risk, compliance | Drowning in data. Wrong decisions are extremely costly. | 6–8 weeks |
+| 4 | **Government** | Proven by NJ demo. Highest pain but longest procurement cycle. | Months |
+| 5 | **Enterprise at scale** | PayPal-scale companies. Biggest budget. Hardest to close fast. | Months |
 
 ---
 
-## The Intelligence Layer — Phase 2
+## Phase 1 — The Product Today
+
+**What Kurious does:**
+- Integrates with existing enterprise data sources
+- Reads across every format: documents, spreadsheets, databases, video, images
+- Returns answers in plain language with exact source citations
+- Never moves, copies, or trains on customer data
+- Works for non-technical business users
+
+**What needs to be built for Phase 1 enterprise launch:**
+- [ ] Clean onboarding flow for admin (connect data source → test → invite team)
+- [ ] Business user interface (search → thinking steps → answer → sources)
+- [ ] SSO login (Google Workspace, Microsoft)
+- [ ] Access permissions (role-based, department-level)
+- [ ] Usage dashboard for admin
+
+---
+
+## Phase 2 — The Intelligence Layer
+
+This is where Kurious becomes something no competitor can copy quickly.
 
 Once Kurious is embedded in an organisation, it starts to learn:
 
-- Which questions get asked most
-- Where information gaps exist
+- Which questions get asked most frequently
+- Where information gaps exist — questions asked that had no answer
 - What decisions are being delayed because data is hard to find
-- What the workflow looks like before and after a decision
+- Which departments are asking similar questions without knowing it
+- What the workflow looks like before and after a key decision
 
-This transforms Kurious from a retrieval tool into an **organisational intelligence layer** — it proactively surfaces information before people even know to ask for it.
+**This transforms Kurious from a retrieval tool into an organisational intelligence layer.**
 
-This is the long-term moat. No competitor is building this.
+It stops waiting to be asked and starts proactively surfacing information:
+
+> "Three people in your strategy team asked about the Johnson contract this week. Here is a summary with all relevant clauses — you may want to share this."
+
+> "Your compliance team has asked 14 questions about GDPR requirements this month. Here is a gap in your documentation that may need attention."
+
+This is the long-term moat. It is not just search. It is memory, pattern recognition, and proactive intelligence. No competitor is building this.
 
 ---
 
-## Go-To-Market — How We Move in Weeks
+## The Product Roadmap
 
-### Step 1 — Define the first customer this week
-Pick one consulting firm or law firm. One real organisation with this exact pain. Kunal or Nirmit likely knows someone. One conversation, not a campaign.
+### Now — Weeks 1–4
+- Lock the product vision with Kunal and Nirmit
+- Define exactly what data sources Kurious connects to today
+- Build the admin onboarding flow
+- Build the business user search interface
+- Identify first pilot customer
 
-### Step 2 — Show them the NJ demo
-Do not pitch. Show. Let them see Kurious working on 85 million real records. Ask them: "Is this the problem you have?" They will say yes.
+### Short term — Weeks 5–12
+- Run first pilot with consulting or legal firm
+- Gather real usage data — what do people ask? Where does Kurious fail?
+- Ship improvements based on pilot feedback
+- Write first case study
 
-### Step 3 — Run a scoped pilot
-Integrate Kurious into one part of their data. One use case. Two weeks. Measure time saved. Decisions improved. Questions answered that were previously unanswerable.
+### Medium term — Months 3–6
+- Expand to second vertical based on pilot learnings
+- Build the intelligence layer — pattern recognition, proactive surfacing
+- Self-serve pilot request on aintropy.ai
+- 3 paying enterprise customers
 
-### Step 4 — Pilot becomes case study
-Real numbers. Real story. This becomes the marketing — not a claim, proof.
+### Long term — Months 6–12
+- Intelligence layer in production
+- 10+ enterprise customers across 3 verticals
+- Published benchmarks establishing Kurious as the accuracy standard
+- Kurious becomes the product AIntropy sells externally
 
-### Step 5 — Case study opens the next door
-Consulting firms talk to each other. Law firms talk to each other. One strong case study in a vertical unlocks the whole vertical.
+---
+
+## How We Get the First Customer — In Weeks
+
+**Step 1:** Identify one consulting firm or law firm. One real organisation. One person Kunal or Nirmit already knows or can reach through one connection.
+
+**Step 2:** Show them the NJ demo. Do not pitch. Show. Ask: "Is this the problem you have?" They will say yes.
+
+**Step 3:** Propose a 2-week pilot. One department. One use case. We measure time-to-answer before and after. Zero risk to them — their data never leaves.
+
+**Step 4:** Pilot runs. We monitor daily. We fix anything that breaks.
+
+**Step 5:** Pilot succeeds. We write the case study together. They become a reference.
+
+**Step 6:** The case study opens the next door. Repeat.
 
 ---
 
@@ -124,34 +168,42 @@ Consulting firms talk to each other. Law firms talk to each other. One strong ca
 - Not a generic AI assistant
 - Not a tool that requires your data to leave your building
 - Not only for technical users
+- Not a competitor to ChatGPT or Google — it is built for the data they have never seen
 
 ---
 
 ## The Metric That Matters
 
-**Time from question to verified answer** — before Kurious vs after Kurious.
+**Time from question to verified answer — before Kurious vs after Kurious.**
 
-That is the number that sells. That is the number that goes in every case study, every LinkedIn post, every sales conversation.
+That is the number that sells. That is the number in every case study, every LinkedIn post, every sales conversation, every board deck.
+
+If a lawyer used to spend 4 hours finding a precedent and now spends 8 seconds — that is the story.
 
 ---
 
 ## Open Questions — To Discuss with Kunal and Nirmit
 
-- [ ] What does the integration actually look like for a new customer — how long does onboarding take?
 - [ ] What data sources can Kurious connect to today out of the box?
-- [ ] Is there a self-serve version or does every integration need engineering support?
-- [ ] What is the pricing model — per seat, per query, per data source?
-- [ ] What is the one vertical Kunal and Nirmit feel most confident about right now?
+- [ ] How long does indexing take for a new enterprise data source?
+- [ ] Is SSO (Google/Microsoft login) supported today?
+- [ ] What is the pricing model — per seat, per query, per data source, or value-based?
+- [ ] What is the one vertical Kunal and Nirmit feel most confident about for the first pilot?
+- [ ] Is there anyone in their network at a consulting firm or law firm we can approach this week?
+- [ ] What does the integration look like technically — how much engineering is required per customer?
 
 ---
 
-## Next Steps
+## Related Documents
 
-- [ ] Align on this vision with Kunal and Nirmit
-- [ ] Identify one first customer — name, company, contact
-- [ ] Define what the pilot looks like — scope, duration, success metric
-- [ ] Build the Kurious brand and product page on aintropy.ai
-- [ ] Write the first piece of content around the "organisational brain" positioning
+| Document | What it covers |
+|----------|---------------|
+| [kurious-brand.md](./kurious-brand.md) | Brand voice, positioning, visual direction |
+| [kurious-ui-ux-plan.md](./kurious-ui-ux-plan.md) | Interface design, user flows, key screens |
+| [kurious-testing-plan.md](./kurious-testing-plan.md) | How we validate before and during pilots |
+| [kurious-product-marketing.md](./kurious-product-marketing.md) | Messaging, objection handling, demo strategy |
+| [kurious-marketing-strategy.md](./kurious-marketing-strategy.md) | Category creation, flywheel, 90-day plan |
+| [marketing-flywheel.md](./marketing-flywheel.md) | Original marketing flywheel document |
 
 ---
 

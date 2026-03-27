@@ -43,6 +43,22 @@ Central hub for all AIntropy links, repos, and product tracking.
 
 ---
 
+## Kurious — Strategy Documents
+
+> Authored by Shivangi Mishra · March 2026 · Pending review by Kunal and Nirmit
+
+| Document | What it covers |
+|----------|---------------|
+| [kurious-product-strategy.md](./kurious-product-strategy.md) | Product vision, target customers, roadmap, first customer GTM |
+| [kurious-brand.md](./kurious-brand.md) | Brand voice, positioning, visual direction, tagline |
+| [kurious-ui-ux-plan.md](./kurious-ui-ux-plan.md) | Interface design, user flows, key screens, design system |
+| [kurious-testing-plan.md](./kurious-testing-plan.md) | 5-layer testing plan — retrieval, quality, UX, pilot, reliability |
+| [kurious-product-marketing.md](./kurious-product-marketing.md) | ICP, messaging, objections, demo strategy, content pillars |
+| [kurious-marketing-strategy.md](./kurious-marketing-strategy.md) | Category creation, founder-led flywheel, 90-day plan |
+| [marketing-flywheel.md](./marketing-flywheel.md) | Original marketing flywheel document |
+
+---
+
 ## Deployment
 
 | Platform | Connected To | Deploys |
