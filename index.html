@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kurious — Strategy Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F5F7FA;
+    --nav: #FFFFFF;
+    --surface: #FFFFFF;
+    --surface2: #F0F2F5;
+    --border: #E2E6EA;
+    --border2: #D0D5DC;
+    --text1: #0D1117;
+    --text2: #24292F;
+    --text3: #57606A;
+    --text4: #9CA3AF;
+    --cyan: #0070CC;
+    --cyan-dim: rgba(0,112,204,0.08);
+    --cyan-glow: rgba(0,112,204,0.2);
+    --teal: #0891B2;
+    --green: #1A7F37;
+    --amber: #9A6700;
+    --red: #CF222E;
+    --purple: #6639BA;
+  }
+
+  html, body { height: 100%; background: var(--bg); color: var(--text1); font-family: 'Inter', sans-serif; overflow: hidden; }
+
+  /* ── LAYOUT ─────────────────────────────────────────────────── */
+  .shell { display: flex; flex-direction: column; height: 100vh; }
+
+  /* ── TOPBAR ──────────────────────────────────────────────────── */
+  .topbar {
+    flex-shrink: 0;
+    background: var(--nav);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px;
+    padding: 0 24px; height: 56px;
+  }
+  .topbar-logo { display: flex; align-items: center; gap: 10px; }
+  .topbar-logo .wordmark { font-size: 15px; font-weight: 700; color: var(--text1); letter-spacing: -0.3px; }
+  .topbar-logo .badge {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
+    background: var(--cyan-dim); color: var(--cyan); border: 1px solid var(--cyan-glow);
+    padding: 2px 8px; border-radius: 4px; text-transform: uppercase;
+  }
+  .topbar-divider { width: 1px; height: 24px; background: var(--border); margin: 0 4px; }
+  .topbar-title { font-size: 13px; color: var(--text3); font-weight: 500; }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .topbar-meta { font-size: 11px; color: var(--text4); }
+  .topbar-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); }
+
+  /* ── TAB BAR ─────────────────────────────────────────────────── */
+  .tabbar {
+    flex-shrink: 0;
+    background: var(--nav);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: stretch;
+    padding: 0 24px; gap: 0; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabbar::-webkit-scrollbar { display: none; }
+  .tab {
+    display: flex; align-items: center; gap: 7px;
+    padding: 0 16px; height: 44px; cursor: pointer;
+    font-size: 12.5px; font-weight: 500; color: var(--text3);
+    border-bottom: 2px solid transparent; white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+    user-select: none;
+  }
+  .tab:hover { color: var(--text2); }
+  .tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+  .tab .tab-icon { font-size: 14px; opacity: 0.8; }
+  .tab-num {
+    font-size: 10px; font-weight: 700; min-width: 18px; height: 18px;
+    border-radius: 4px; background: var(--surface); color: var(--text4);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tab.active .tab-num { background: var(--cyan-dim); color: var(--cyan); }
+
+  /* ── CONTENT ─────────────────────────────────────────────────── */
+  .content { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 40px 48px; }
+  .content::-webkit-scrollbar { width: 6px; }
+  .content::-webkit-scrollbar-track { background: transparent; }
+  .content::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── SHARED COMPONENTS ───────────────────────────────────────── */
+  .section-header { margin-bottom: 40px; }
+  .section-eyebrow {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--cyan); margin-bottom: 12px;
+  }
+  .section-title { font-size: 36px; font-weight: 800; color: var(--text1); line-height: 1.15; letter-spacing: -0.8px; }
+  .section-sub { font-size: 15px; color: var(--text3); margin-top: 10px; max-width: 600px; line-height: 1.6; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .card-cyan { border-color: var(--cyan-glow); background: var(--cyan-dim); }
+  .card-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text4); margin-bottom: 10px; }
+  .card-title { font-size: 17px; font-weight: 700; color: var(--text1); margin-bottom: 8px; }
+  .card-body { font-size: 13.5px; color: var(--text3); line-height: 1.65; }
+
+  .big-quote {
+    font-size: 22px; font-weight: 700; color: var(--text1); line-height: 1.45;
+    border-left: 3px solid var(--cyan); padding-left: 24px; margin: 32px 0;
+    letter-spacing: -0.3px;
+  }
+
+  .divider { height: 1px; background: var(--border); margin: 36px 0; }
+
+  .table-wrap { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 20px 0; }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: var(--surface2); }
+  thead th { padding: 12px 16px; font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text4); text-align: left; }
+  tbody tr { border-top: 1px solid var(--border); }
+  tbody tr:hover { background: var(--surface2); }
+  tbody td { padding: 13px 16px; font-size: 13.5px; color: var(--text2); }
+  tbody td:first-child { color: var(--text1); font-weight: 500; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px;
+  }
+  .badge-cyan { background: var(--cyan-dim); color: var(--cyan); border: 1px solid var(--cyan-glow); }
+  .badge-green { background: rgba(16,185,129,0.12); color: var(--green); border: 1px solid rgba(16,185,129,0.25); }
+  .badge-amber { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.25); }
+  .badge-red { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.25); }
+  .badge-purple { background: rgba(139,92,246,0.12); color: var(--purple); border: 1px solid rgba(139,92,246,0.25); }
+
+  .pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+
+  .h2 { font-size: 22px; font-weight: 700; color: var(--text1); letter-spacing: -0.4px; margin-bottom: 16px; }
+  .h3 { font-size: 16px; font-weight: 700; color: var(--text1); margin-bottom: 10px; }
+  .body { font-size: 14px; color: var(--text2); line-height: 1.7; }
+  .muted { color: var(--text3); }
+
+  .check-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .check-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; color: var(--text2); }
+  .check-list li::before { content: '✓'; color: var(--cyan); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+  .num-list { list-style: none; display: flex; flex-direction: column; gap: 10px; counter-reset: nl; }
+  .num-list li { counter-increment: nl; display: flex; gap: 12px; align-items: flex-start; font-size: 13.5px; color: var(--text2); line-height: 1.55; }
+  .num-list li::before { content: counter(nl); color: var(--text4); font-weight: 700; font-size: 12px; min-width: 22px; height: 22px; border-radius: 6px; background: var(--surface2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+  /* flywheel */
+  .flywheel {
+    width: 340px; height: 340px; border-radius: 50%;
+    border: 2px solid var(--border2); position: relative;
+    margin: 0 auto 32px;
+    background: radial-gradient(circle at center, var(--cyan-dim) 0%, transparent 65%);
+  }
+  .flywheel-center {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .flywheel-center-text { font-size: 13px; font-weight: 700; color: var(--cyan); line-height: 1.4; }
+  .fw-node {
+    position: absolute; transform: translate(-50%, -50%);
+    background: var(--surface); border: 1px solid var(--border2); border-radius: 10px;
+    padding: 8px 12px; font-size: 11px; font-weight: 600; color: var(--text2);
+    text-align: center; white-space: nowrap; cursor: default;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .fw-node:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  /* timeline */
+  .timeline { display: flex; flex-direction: column; gap: 0; position: relative; }
+  .timeline::before { content: ''; position: absolute; left: 19px; top: 20px; bottom: 20px; width: 2px; background: var(--border2); }
+  .tl-item { display: flex; gap: 20px; padding: 16px 0; position: relative; }
+  .tl-dot {
+    width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border2);
+    background: var(--surface); flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: var(--text3); z-index: 1;
+  }
+  .tl-dot.active { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-dim); }
+  .tl-content { padding-top: 8px; flex: 1; }
+  .tl-label { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text4); margin-bottom: 4px; }
+  .tl-title { font-size: 15px; font-weight: 700; color: var(--text1); margin-bottom: 6px; }
+  .tl-body { font-size: 13px; color: var(--text3); line-height: 1.6; }
+
+  /* metric cards */
+  .metric-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px 24px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .metric-val { font-size: 32px; font-weight: 800; color: var(--cyan); letter-spacing: -1px; line-height: 1; }
+  .metric-label { font-size: 12px; color: var(--text3); font-weight: 500; }
+
+  /* layer stack */
+  .layer-stack { display: flex; flex-direction: column; gap: 8px; }
+  .layer {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px;
+    transition: border-color 0.15s;
+  }
+  .layer:hover { border-color: var(--border2); }
+  .layer-num {
+    width: 32px; height: 32px; border-radius: 8px; background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; color: var(--cyan); flex-shrink: 0;
+  }
+  .layer-title { font-size: 14px; font-weight: 700; color: var(--text1); margin-bottom: 2px; }
+  .layer-sub { font-size: 12px; color: var(--text3); }
+  .layer-metric { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--green); white-space: nowrap; }
+
+  /* voice card */
+  .voice-col { display: flex; flex-direction: column; gap: 10px; }
+  .voice-item {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 16px; font-size: 13px; line-height: 1.5;
+  }
+  .voice-do { color: var(--green); font-weight: 600; }
+  .voice-dont { color: var(--red); font-weight: 600; text-decoration: line-through; text-decoration-color: rgba(239,68,68,0.4); }
+
+  /* objection */
+  .objection { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 8px; }
+  .obj-q {
+    padding: 14px 18px; background: var(--surface); cursor: pointer;
+    font-size: 13.5px; font-weight: 600; color: var(--text2);
+    display: flex; align-items: center; justify-content: space-between;
+    transition: background 0.15s;
+  }
+  .obj-q:hover { background: var(--surface2); }
+  .obj-q .arrow { color: var(--text4); font-size: 12px; transition: transform 0.2s; }
+  .obj-a {
+    padding: 0 18px; max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s;
+    font-size: 13px; color: var(--text3); line-height: 1.65;
+    border-top: 0px solid var(--border);
+  }
+  .objection.open .obj-a { max-height: 200px; padding: 14px 18px; border-top: 1px solid var(--border); }
+  .objection.open .arrow { transform: rotate(180deg); }
+
+  /* color swatches */
+  .swatch-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .swatch {
+    display: flex; flex-direction: column; gap: 6px; align-items: center;
+  }
+  .swatch-box { width: 52px; height: 52px; border-radius: 10px; border: 1px solid var(--border); }
+  .swatch-label { font-size: 10px; color: var(--text3); font-family: monospace; }
+
+  /* competitor */
+  .vs-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 12px;
+  }
+  .vs-header { padding: 14px 20px; background: var(--surface2); display: flex; align-items: center; gap: 10px; }
+  .vs-name { font-size: 14px; font-weight: 700; color: var(--text1); }
+  .vs-body { padding: 14px 20px; font-size: 13px; color: var(--text3); line-height: 1.6; }
+
+  /* priority badges */
+  .priority-1 { background: rgba(0,212,255,0.15); color: var(--cyan); border: 1px solid rgba(0,212,255,0.3); }
+  .priority-2 { background: rgba(16,185,129,0.12); color: #10B981; border: 1px solid rgba(16,185,129,0.25); }
+  .priority-3 { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.25); }
+  .priority-4 { background: rgba(139,92,246,0.12); color: var(--purple); border: 1px solid rgba(139,92,246,0.25); }
+  .priority-5 { background: rgba(107,114,128,0.12); color: #9CA3AF; border: 1px solid rgba(107,114,128,0.25); }
+
+  /* channel table row highlight */
+  .channel-owner { font-size: 12px; color: var(--cyan); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-logo">
+      <span class="wordmark">Kurious</span>
+      <span class="badge">Strategy</span>
+    </div>
+    <div class="topbar-divider"></div>
+    <span class="topbar-title">by AIntropy</span>
+    <div class="topbar-right">
+      <div class="topbar-dot" style="background:#F59E0B"></div>
+      <span class="topbar-meta">Draft · March 2026 · Shivangi Mishra</span>
+    </div>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tabbar" id="tabbar">
+    <div class="tab active" data-tab="strategy" onclick="switchTab('strategy')">
+      <span class="tab-icon">🎯</span> Product Strategy
+    </div>
+    <div class="tab" data-tab="brand" onclick="switchTab('brand')">
+      <span class="tab-icon">✦</span> Brand
+    </div>
+    <div class="tab" data-tab="uiux" onclick="switchTab('uiux')">
+      <span class="tab-icon">⬡</span> UI / UX Plan
+    </div>
+    <div class="tab" data-tab="testing" onclick="switchTab('testing')">
+      <span class="tab-icon">◎</span> Testing Plan
+    </div>
+    <div class="tab" data-tab="productmkt" onclick="switchTab('productmkt')">
+      <span class="tab-icon">◈</span> Product Marketing
+    </div>
+    <div class="tab" data-tab="mkt" onclick="switchTab('mkt')">
+      <span class="tab-icon">⟳</span> Marketing Strategy
+    </div>
+    <div class="tab" data-tab="flywheel" onclick="switchTab('flywheel')">
+      <span class="tab-icon">◉</span> Marketing Flywheel
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+
+    <!-- ══════════════════ PRODUCT STRATEGY ══════════════════ -->
+    <div class="panel active" id="panel-strategy">
+      <div class="section-header">
+        <div class="section-eyebrow">Product Strategy · v2 · March 2026</div>
+        <div class="section-title">The Organisational<br>Intelligence Engine</div>
+        <div class="section-sub">Not a chatbot. Not a search tool. The first AI that reads everything an organisation knows — and gives anyone the exact answer they need, instantly.</div>
+      </div>
+
+      <div class="big-quote">
+        "Kurious is the first AI that can read everything an organisation knows — across every source, every format, every silo — and give anyone the exact answer they need, instantly."
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">The Problem</div>
+      <div class="grid2" style="margin-bottom:24px">
+        <div class="card">
+          <div class="card-label">What people do today</div>
+          <ul class="check-list" style="margin-top:4px">
+            <li style="color:var(--red)">Ask IT and wait days for a report</li>
+            <li style="color:var(--red)">Search manually across disconnected systems for hours</li>
+            <li style="color:var(--red)">Make decisions with incomplete information</li>
+            <li style="color:var(--red)">Hire consultants to dig through data for them</li>
+            <li style="color:var(--red)">Give up and move on with the wrong answer</li>
+          </ul>
+        </div>
+        <div class="card card-cyan">
+          <div class="card-label">What Kurious changes</div>
+          <ul class="check-list" style="margin-top:4px">
+            <li>Integrates with all existing data sources simultaneously</li>
+            <li>Reads documents, spreadsheets, databases, video, images</li>
+            <li>Returns exact answers in plain language with cited sources</li>
+            <li>Works for non-technical business users — no training needed</li>
+            <li>Data never moves, never leaves the customer's environment</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">Target Customers — Priority Order</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Priority</th>
+              <th>Vertical</th>
+              <th>Why</th>
+              <th>Sales Speed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge priority-1">🥇 1st</span></td>
+              <td>Consulting firms</td>
+              <td>Their business IS finding & synthesising information. Immediate value.</td>
+              <td><span class="badge badge-cyan">Weeks</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge priority-2">🥈 2nd</span></td>
+              <td>Legal — mid-size law firms</td>
+              <td>Lawyers bill by the hour. Finding precedents costs real money. Data privacy critical.</td>
+              <td><span class="badge badge-green">4–6 weeks</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge priority-3">🥉 3rd</span></td>
+              <td>Finance — AM, risk, compliance</td>
+              <td>Drowning in data. Wrong decisions are extremely costly.</td>
+              <td><span class="badge badge-amber">6–8 weeks</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge priority-4">4th</span></td>
+              <td>Government</td>
+              <td>Proven by NJ demo. Highest pain but longest procurement.</td>
+              <td><span class="badge badge-purple">Months</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge priority-5">5th</span></td>
+              <td>Enterprise at scale</td>
+              <td>PayPal-scale. Biggest budget. Hardest to close fast.</td>
+              <td><span class="badge" style="background:var(--surface2);color:var(--text4);border:1px solid var(--border)">Months</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">Roadmap</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot active">1</div>
+          <div class="tl-content">
+            <div class="tl-label">Now — Weeks 1–4</div>
+            <div class="tl-title">Lock the product</div>
+            <div class="tl-body">Align vision with Kunal and Nirmit · Admin onboarding flow · Business user search interface · Identify first pilot customer</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">2</div>
+          <div class="tl-content">
+            <div class="tl-label">Short term — Weeks 5–12</div>
+            <div class="tl-title">First pilot</div>
+            <div class="tl-body">Run first pilot with consulting or legal firm · Gather real usage data · Write first case study</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">3</div>
+          <div class="tl-content">
+            <div class="tl-label">Medium term — Months 3–6</div>
+            <div class="tl-title">Intelligence layer + 3 paying customers</div>
+            <div class="tl-body">Expand to second vertical · Build pattern recognition and proactive surfacing · 3 paying enterprise customers</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">4</div>
+          <div class="tl-content">
+            <div class="tl-label">Long term — Months 6–12</div>
+            <div class="tl-title">Category ownership</div>
+            <div class="tl-body">Intelligence layer in production · 10+ enterprise customers across 3 verticals · Published benchmarks · Kurious becomes the product AIntropy sells</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">The Metric That Matters</div>
+      <div class="big-quote" style="font-size:18px">
+        Time from question to verified answer — before Kurious vs after Kurious.<br>
+        <span style="color:var(--text3);font-weight:400;font-size:14px;margin-top:8px;display:block">If a lawyer used to spend 4 hours finding a precedent and now spends 8 seconds — that is the story.</span>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2" style="color:var(--amber)">Open Questions for Kunal & Nirmit</div>
+      <div class="card" style="border-color:rgba(245,158,11,0.2);background:rgba(245,158,11,0.05)">
+        <ul class="check-list" style="gap:12px">
+          <li style="color:var(--amber)">What data sources can Kurious connect to today out of the box?</li>
+          <li style="color:var(--amber)">How long does indexing take for a new enterprise data source?</li>
+          <li style="color:var(--amber)">Is SSO (Google/Microsoft login) supported today?</li>
+          <li style="color:var(--amber)">What is the pricing model — per seat, per query, per data source, or value-based?</li>
+          <li style="color:var(--amber)">What is the one vertical Kunal and Nirmit feel most confident about for the first pilot?</li>
+          <li style="color:var(--amber)">Is there anyone in their network at a consulting firm or law firm we can approach this week?</li>
+        </ul>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════ BRAND ══════════════════ -->
+    <div class="panel" id="panel-brand">
+      <div class="section-header">
+        <div class="section-eyebrow">Brand Identity · March 2026</div>
+        <div class="section-title">The Kurious Brand</div>
+        <div class="section-sub">What Kurious is, how it sounds, and what it stands for — in every word and every pixel.</div>
+      </div>
+
+      <div class="grid2" style="margin-bottom:32px">
+        <div>
+          <div class="h2">The Name</div>
+          <div class="card card-cyan" style="margin-bottom:16px">
+            <div class="card-title" style="font-size:28px;letter-spacing:-1px">Kurious</div>
+            <div class="card-body" style="margin-top:8px">The K is deliberate. It signals this is not a generic AI. It is a proper name — something built, owned, specific. Curious means wanting to know. Kurious means capable of knowing.</div>
+          </div>
+          <div class="card">
+            <div class="card-label">One-sentence positioning</div>
+            <div class="card-body" style="font-size:15px;color:var(--text1);font-weight:600;line-height:1.5">Kurious gives organisations instant access to everything they know — without their data ever leaving their systems.</div>
+          </div>
+        </div>
+        <div>
+          <div class="h2">Tagline</div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:32px;text-align:center;margin-bottom:16px">
+            <div style="font-size:26px;font-weight:800;color:var(--text1);letter-spacing:-0.5px">Ask anything.</div>
+            <div style="font-size:26px;font-weight:800;color:var(--cyan);letter-spacing:-0.5px">Know everything.</div>
+            <div style="font-size:12px;color:var(--text4);margin-top:12px">The promise in six words. The problem and the solution.</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Category name</div>
+            <div style="font-size:18px;font-weight:700;color:var(--cyan)">Organisational Intelligence</div>
+            <div class="card-body" style="margin-top:6px">A new category. Not AI search. Not RAG. Not enterprise chat. Kurious defines it and owns it.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">Brand Personality</div>
+      <div class="pill-row" style="margin-bottom:28px">
+        <span class="badge badge-cyan">Precise</span>
+        <span class="badge badge-green">Fast</span>
+        <span class="badge badge-cyan">Trustworthy</span>
+        <span class="badge badge-purple">Intelligent</span>
+        <span class="badge badge-cyan">Direct</span>
+        <span class="badge badge-green">Clear</span>
+        <span class="badge badge-amber">Confident</span>
+        <span class="badge badge-cyan">Calm</span>
+      </div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-body" style="font-size:14px">Kurious is not a cheerful assistant. It is not playful. It is the most competent person in the room — reliable, fast, never wastes your time. It treats you as intelligent. It does not explain things twice. It answers and moves on.</div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">Voice — What Kurious Says</div>
+      <div class="grid2">
+        <div>
+          <div class="h3" style="color:var(--green);margin-bottom:12px">✓ Say this</div>
+          <div class="voice-col">
+            <div class="voice-item"><span class="voice-do">✓</span> "Here is the answer."</div>
+            <div class="voice-item"><span class="voice-do">✓</span> "Based on the Johnson contract, dated March 12..."</div>
+            <div class="voice-item"><span class="voice-do">✓</span> "No results found for that query in the connected sources."</div>
+            <div class="voice-item"><span class="voice-do">✓</span> "Your data never leaves your systems."</div>
+            <div class="voice-item"><span class="voice-do">✓</span> "Retrieved in 0.8s from 23 sources."</div>
+          </div>
+        </div>
+        <div>
+          <div class="h3" style="color:var(--red);margin-bottom:12px">✗ Never say this</div>
+          <div class="voice-col">
+            <div class="voice-item"><span class="voice-dont">✗</span> "Great question! Let me help you with that."</div>
+            <div class="voice-item"><span class="voice-dont">✗</span> "I think the answer might be..."</div>
+            <div class="voice-item"><span class="voice-dont">✗</span> "As an AI language model..."</div>
+            <div class="voice-item"><span class="voice-dont">✗</span> "Here's a summary of what I found!"</div>
+            <div class="voice-item"><span class="voice-dont">✗</span> "I'm unable to access that information."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">Visual Direction</div>
+      <div class="swatch-row" style="margin-bottom:20px">
+        <div class="swatch">
+          <div class="swatch-box" style="background:#F5F7FA"></div>
+          <div class="swatch-label">#F5F7FA</div>
+          <div style="font-size:10px;color:var(--text4)">Background</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-box" style="background:#FFFFFF"></div>
+          <div class="swatch-label">#FFFFFF</div>
+          <div style="font-size:10px;color:var(--text4)">Surface</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-box" style="background:#0070CC"></div>
+          <div class="swatch-label">#0070CC</div>
+          <div style="font-size:10px;color:var(--text4)">Cyan / Primary</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-box" style="background:#0891B2"></div>
+          <div class="swatch-label">#0891B2</div>
+          <div style="font-size:10px;color:var(--text4)">Teal / Secondary</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-box" style="background:#0D1117"></div>
+          <div class="swatch-label">#0D1117</div>
+          <div style="font-size:10px;color:var(--text4)">Headings</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-box" style="background:#57606A"></div>
+          <div class="swatch-label">#57606A</div>
+          <div style="font-size:10px;color:var(--text4)">Body text</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-box" style="background:#EF4444"></div>
+          <div class="swatch-label">#EF4444</div>
+          <div style="font-size:10px;color:var(--text4)">Error / Negative</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-label">Typography</div>
+        <div style="font-size:28px;font-weight:800;color:var(--text1);margin-bottom:4px">Inter</div>
+        <div class="card-body">Geometric, clean, readable at every size. Weights 300–800. Tight tracking on headings (−0.5px). Relaxed line height on body (1.65–1.7). Dark mode only.</div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════ UI/UX PLAN ══════════════════ -->
+    <div class="panel" id="panel-uiux">
+      <div class="section-header">
+        <div class="section-eyebrow">UI / UX Plan · March 2026</div>
+        <div class="section-title">Designing for<br>the Answer</div>
+        <div class="section-sub">Every design decision starts with one question: does this make the answer faster and more trustworthy?</div>
+      </div>
+
+      <div class="grid3" style="margin-bottom:32px">
+        <div class="card card-cyan">
+          <div class="card-label">Principle 1</div>
+          <div class="card-title">Business user first</div>
+          <div class="card-body">If a non-technical person cannot use it without training, it is too complex.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Principle 2</div>
+          <div class="card-title">Answer is the product</div>
+          <div class="card-body">Every UI decision should make the answer faster and more trustworthy.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Principle 3</div>
+          <div class="card-title">Show your work</div>
+          <div class="card-body">Always show how Kurious found the answer. Never just return a result.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Principle 4</div>
+          <div class="card-title">Speed as a feeling</div>
+          <div class="card-body">The interface should feel instant even when retrieval takes a moment.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Principle 5</div>
+          <div class="card-title">Trust by design</div>
+          <div class="card-body">Data privacy, source citations, and transparency should be visible — not buried in docs.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">The Four States of Search</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px">
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+            <span class="badge badge-cyan">State 1</span>
+            <span style="font-size:14px;font-weight:700;color:var(--text1)">Idle</span>
+          </div>
+          <div class="card-body">Greeting + search bar centred. Suggested queries from org patterns. "Connected to: Legal database · 4 more sources" shown subtly below.</div>
+        </div>
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+            <span class="badge badge-green">State 2</span>
+            <span style="font-size:14px;font-weight:700;color:var(--text1)">Typing</span>
+          </div>
+          <div class="card-body">Greeting slides out. Real-time suggestions appear drawn from actual org patterns. Arrow button activates (cyan) when text is entered.</div>
+        </div>
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+            <span class="badge badge-amber">State 3</span>
+            <span style="font-size:14px;font-weight:700;color:var(--text1)">Thinking</span>
+          </div>
+          <div class="card-body">Live step trace builds trust — no spinner:<br>
+            ✓ Understood your question<br>
+            ✓ Searching across 57M documents<br>
+            ✓ Scanning videos, data &amp; documents<br>
+            ⟳ Connecting insights...</div>
+        </div>
+        <div class="card card-cyan">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+            <span class="badge priority-1">State 4</span>
+            <span style="font-size:14px;font-weight:700;color:var(--text1)">Answer</span>
+          </div>
+          <div class="card-body">Search bar moves to top. Stacked conversation. Each answer: question label → answer text → provenance strip → feedback bar → follow-up suggestions.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">Answer Card Structure</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;max-width:600px;margin-bottom:32px">
+        <div style="padding:20px 24px;border-bottom:1px solid var(--border)">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--text4);margin-bottom:8px">⚡ Quick</div>
+          <div style="font-size:15px;color:var(--text1);line-height:1.6">The Johnson contract, signed March 12 2023, includes a penalty clause of 2.5% per month on delayed payments, capped at 15% of contract value. The clause is in Section 8.3.</div>
+        </div>
+        <div style="padding:12px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;font-size:13px;color:var(--text3)">
+          <span>📄 ×3</span><span>📊 ×1</span><span>·</span><span>Retrieved in 0.8s</span>
+          <span style="margin-left:auto;color:var(--cyan);cursor:pointer;font-size:12px">▸ View Sources</span>
+        </div>
+        <div style="padding:12px 24px;display:flex;align-items:center;gap:12px;font-size:13px;color:var(--text3)">
+          <span>Was this helpful?</span>
+          <span style="cursor:pointer">👍</span>
+          <span style="cursor:pointer">👎</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">Admin Onboarding Flow</div>
+      <div style="display:flex;gap:0;align-items:stretch;margin-bottom:32px">
+        <div style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px 0 0 12px;padding:20px;text-align:center">
+          <div style="font-size:28px;margin-bottom:8px">①</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text1);margin-bottom:6px">Connect data source</div>
+          <div style="font-size:12px;color:var(--text3)">Google Drive / SharePoint / Database / Files</div>
+        </div>
+        <div style="width:2px;background:var(--border);flex-shrink:0"></div>
+        <div style="flex:1;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:20px;text-align:center">
+          <div style="font-size:28px;margin-bottom:8px">②</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text1);margin-bottom:6px">Select access scope</div>
+          <div style="font-size:12px;color:var(--text3)">Department-level or org-wide</div>
+        </div>
+        <div style="width:2px;background:var(--border);flex-shrink:0"></div>
+        <div style="flex:1;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:20px;text-align:center">
+          <div style="font-size:28px;margin-bottom:8px">③</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text1);margin-bottom:6px">Set permissions</div>
+          <div style="font-size:12px;color:var(--text3)">Role-based access control</div>
+        </div>
+        <div style="width:2px;background:var(--border);flex-shrink:0"></div>
+        <div style="flex:1;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:20px;text-align:center">
+          <div style="font-size:28px;margin-bottom:8px">④</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text1);margin-bottom:6px">Test with your data</div>
+          <div style="font-size:12px;color:var(--text3)">Demo query on their own data</div>
+        </div>
+        <div style="width:2px;background:var(--border);flex-shrink:0"></div>
+        <div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:0 12px 12px 0;padding:20px;text-align:center;border-color:var(--cyan-glow)">
+          <div style="font-size:28px;margin-bottom:8px">⑤</div>
+          <div style="font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:6px">Invite team</div>
+          <div style="font-size:12px;color:var(--text3)">Email invites — click and start asking</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">Design System</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Element</th><th>Spec</th></tr></thead>
+          <tbody>
+            <tr><td>Background</td><td>#0D0D0D (near-black)</td></tr>
+            <tr><td>Primary accent</td><td>Cyan #00D4FF</td></tr>
+            <tr><td>Font</td><td>Inter — geometric, readable, modern</td></tr>
+            <tr><td>Border radius</td><td>12px cards · 8px inputs · 6px buttons</td></tr>
+            <tr><td>Animation speed</td><td>0.2–0.3s ease — fast and purposeful</td></tr>
+            <tr><td>Source click behaviour</td><td>Always opens in new tab at exact location (highlighted passage, timestamp, row)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════ TESTING PLAN ══════════════════ -->
+    <div class="panel" id="panel-testing">
+      <div class="section-header">
+        <div class="section-eyebrow">Testing Plan · March 2026</div>
+        <div class="section-title">Testing Baked In,<br>Not Bolted On</div>
+        <div class="section-sub">Kurious makes a specific promise: the exact answer, from your data, with the source. A wrong answer cited with confidence is worse than no answer at all.</div>
+      </div>
+
+      <div class="grid3" style="margin-bottom:32px">
+        <div class="metric-card">
+          <div class="metric-val">&lt;1%</div>
+          <div class="metric-label">Target hallucination rate</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">&gt;90%</div>
+          <div class="metric-label">Recall@10 target</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">&lt;1s</div>
+          <div class="metric-label">Retrieval time target</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">5 Testing Layers</div>
+      <div class="layer-stack" style="margin-bottom:32px">
+        <div class="layer">
+          <div class="layer-num">1</div>
+          <div>
+            <div class="layer-title">Retrieval — Does it find the right source?</div>
+            <div class="layer-sub">Known answer tests · Cross-source tests · Format tests (PDF, spreadsheet, DB, video, image) · Edge cases</div>
+          </div>
+          <div class="layer-metric">Recall@10 &gt;90%</div>
+        </div>
+        <div class="layer">
+          <div class="layer-num">2</div>
+          <div>
+            <div class="layer-title">Answer Quality — Is the answer correct and complete?</div>
+            <div class="layer-sub">50 benchmark questions per vertical · Score: Correct / Partial / Wrong / Hallucinated · Red team testing week</div>
+          </div>
+          <div class="layer-metric">Hallucination &lt;1%</div>
+        </div>
+        <div class="layer">
+          <div class="layer-num">3</div>
+          <div>
+            <div class="layer-title">UX & Trust — Does a business user trust it?</div>
+            <div class="layer-sub">5 usability sessions pre-pilot · Non-technical participants only · Task completion without assistance</div>
+          </div>
+          <div class="layer-metric">4/5 users pass</div>
+        </div>
+        <div class="layer" style="border-color:var(--cyan-glow)">
+          <div class="layer-num" style="background:var(--cyan-dim);color:var(--cyan)">4</div>
+          <div>
+            <div class="layer-title">Pilot — Does it work on real customer data?</div>
+            <div class="layer-sub">2 weeks · One department · 5–10 users · Customer pre-identifies 10 questions + 5 verification queries</div>
+          </div>
+          <div class="layer-metric" style="color:var(--cyan)">Time ↓ 70%</div>
+        </div>
+        <div class="layer">
+          <div class="layer-num">5</div>
+          <div>
+            <div class="layer-title">Reliability — Does it keep working?</div>
+            <div class="layer-sub">Scale test · Concurrency (50 users simultaneously) · Data freshness · Long-running accuracy (30 days)</div>
+          </div>
+          <div class="layer-metric">Ongoing</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">Pilot Structure</div>
+      <div class="grid2" style="margin-bottom:32px">
+        <div class="card">
+          <div class="card-label">Before the pilot starts</div>
+          <ul class="num-list" style="margin-top:8px">
+            <li>Customer identifies 10 questions they currently can't answer quickly</li>
+            <li>Customer identifies 5 questions they already know the answer to (verification)</li>
+            <li>Customer identifies 3 cross-source questions (require connecting 2+ sources)</li>
+            <li>Kurious answers all verification questions correctly — non-negotiable before pilot begins</li>
+          </ul>
+        </div>
+        <div class="card card-cyan">
+          <div class="card-label">Pilot success criteria</div>
+          <ul class="check-list" style="margin-top:8px">
+            <li>Time to answer reduced by &gt;70%</li>
+            <li>Answer accuracy &gt;95% on verified queries</li>
+            <li>Zero hallucinations during the 2-week pilot</li>
+            <li>&gt;4/5 users still actively using by end of week 2</li>
+            <li>Customer agrees to continue beyond pilot</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">What a "Pass" Looks Like</div>
+      <div class="card">
+        <div class="card-label">Kurious is ready for its first enterprise pilot when:</div>
+        <ul class="check-list" style="margin-top:12px">
+          <li>Hallucination rate &lt;1% on benchmark test set</li>
+          <li>Recall@10 &gt;90% on benchmark test set</li>
+          <li>Retrieval time &lt;1 second on benchmark data</li>
+          <li>4/5 usability session participants complete task without assistance</li>
+          <li>4/5 usability session participants trust the answer</li>
+          <li>Red team testing complete — all critical failures fixed</li>
+          <li>Verification queries for first customer answered correctly</li>
+        </ul>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════ PRODUCT MARKETING ══════════════════ -->
+    <div class="panel" id="panel-productmkt">
+      <div class="section-header">
+        <div class="section-eyebrow">Product Marketing · March 2026</div>
+        <div class="section-title">Who It's For,<br>What It Does for Them</div>
+        <div class="section-sub">Every piece of content, every sales conversation, every demo comes from three answers: who, what, why Kurious.</div>
+      </div>
+
+      <div class="h2">Ideal Customer Profile</div>
+      <div class="grid3" style="margin-bottom:32px">
+        <div class="card" style="border-color:var(--border2)">
+          <div class="card-label">The Organisation</div>
+          <ul class="check-list" style="margin-top:8px">
+            <li>500+ employees</li>
+            <li>Data spread across multiple systems and formats</li>
+            <li>Tried ChatGPT / Copilot — found them insufficient for internal data</li>
+            <li>Operates in regulated / data-sensitive environment</li>
+          </ul>
+        </div>
+        <div class="card card-cyan">
+          <div class="card-label">The Champion (person who buys)</div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:10px;margin-top:4px">Head of Ops · VP Strategy · Chief of Staff · Head of Legal · CTO · Director of AI</div>
+          <ul class="check-list">
+            <li>Team wastes time finding information</li>
+            <li>Decisions get delayed, risky</li>
+            <li>Wants to be the person who fixed this — it is a career win</li>
+            <li>Worried about: data security, adoption, integration complexity</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-label">The End User (uses it daily)</div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:10px;margin-top:4px">Business analyst · Lawyer · Financial analyst · Strategy consultant</div>
+          <ul class="check-list">
+            <li>Not technical</li>
+            <li>Currently uses email or SharePoint search</li>
+            <li>Frustrated by time to find known information</li>
+            <li>Will adopt instantly if it works</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">Messaging by Audience</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:32px">
+        <div class="card">
+          <div class="card-label">For the Champion (buyer)</div>
+          <div class="card-body" style="font-style:italic;color:var(--text1)">"Your team is making decisions based on incomplete information — not because the data doesn't exist, but because getting to it takes too long. Kurious connects to your existing systems and makes every document, database, and file searchable in plain language. No migration. No data risk. Setup in days."</div>
+        </div>
+        <div class="card card-cyan">
+          <div class="card-label">For the End User</div>
+          <div style="font-size:18px;font-weight:700;color:var(--text1)">"Stop searching. Just ask. Kurious finds the answer in seconds — and shows you exactly where it came from."</div>
+        </div>
+        <div class="card">
+          <div class="card-label">For IT / Security</div>
+          <div class="card-body" style="font-style:italic;color:var(--text1)">"Your data never moves, never leaves your environment, and is never used to train any model. You control access. We provide the intelligence."</div>
+        </div>
+        <div class="card">
+          <div class="card-label">For the CEO / Board</div>
+          <div class="card-body" style="font-style:italic;color:var(--text1)">"Every large organisation has a knowledge problem. The organisations that fix their knowledge problem first will move faster, decide better, and outperform those that don't."</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">Objection Handling</div>
+      <div style="margin-bottom:32px">
+        <div class="objection" onclick="toggleObj(this)">
+          <div class="obj-q">"We already use ChatGPT / Copilot / Gemini." <span class="arrow">▼</span></div>
+          <div class="obj-a">Those tools are trained on the internet. They have never seen your data. Ask them about your internal contracts, client files, or proprietary databases — they will hallucinate or say they don't know. Kurious is built specifically for the data that general AI tools cannot reach.</div>
+        </div>
+        <div class="objection" onclick="toggleObj(this)">
+          <div class="obj-q">"What happens to our data?" <span class="arrow">▼</span></div>
+          <div class="obj-a">Nothing. Kurious integrates into your existing systems — it reads your data where it lives. Nothing is copied, moved, or sent outside your environment. Your data is never used to train any model. We never see it.</div>
+        </div>
+        <div class="objection" onclick="toggleObj(this)">
+          <div class="obj-q">"How long does it take to set up?" <span class="arrow">▼</span></div>
+          <div class="obj-a">An admin can connect the first data source and have Kurious working in under a day. No migration project. No IT overhaul. Connect, ask, get answers.</div>
+        </div>
+        <div class="objection" onclick="toggleObj(this)">
+          <div class="obj-q">"How is this different from our internal search?" <span class="arrow">▼</span></div>
+          <div class="obj-a">Internal search finds documents. Kurious finds answers. Ask your search tool "What were the key terms in the Johnson contract from last March?" — it returns a list of documents. Ask Kurious the same question — it returns the answer, the clause, and the exact page it came from.</div>
+        </div>
+        <div class="objection" onclick="toggleObj(this)">
+          <div class="obj-q">"What if Kurious gets it wrong?" <span class="arrow">▼</span></div>
+          <div class="obj-a">Every answer comes with its source — the exact document, page, timestamp, or row used. You can verify any answer in one click. And our hallucination rate on benchmarked datasets is below 1%.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">Positioning vs Competitors</div>
+      <div>
+        <div class="vs-card">
+          <div class="vs-header"><span class="badge badge-amber">vs Glean</span></div>
+          <div class="vs-body">Glean connects your SaaS tools — Slack, Drive, Jira, Salesforce. Kurious connects your institutional data — the contracts, databases, legacy systems, and proprietary records that Glean was never built for. <strong style="color:var(--text1)">Glean is for your work tools. Kurious is for your knowledge.</strong></div>
+        </div>
+        <div class="vs-card">
+          <div class="vs-header"><span class="badge badge-amber">vs Microsoft Copilot</span></div>
+          <div class="vs-body">Copilot works inside Microsoft products. If your data is in a legal database, a government registry, a video archive, or a proprietary system — <strong style="color:var(--text1)">Copilot cannot reach it. Kurious can.</strong></div>
+        </div>
+        <div class="vs-card">
+          <div class="vs-header"><span class="badge badge-amber">vs ChatGPT Enterprise</span></div>
+          <div class="vs-body">ChatGPT Enterprise lets you upload files. Kurious integrates with your live systems — not just files you upload, but databases that update in real time. <strong style="color:var(--text1)">And Kurious never trains on your data.</strong></div>
+        </div>
+        <div class="vs-card">
+          <div class="vs-header"><span class="badge badge-amber">vs Building In-House</span></div>
+          <div class="vs-body">Building a RAG system in-house takes 6–12 months of engineering time and still needs to be made usable by non-technical staff. <strong style="color:var(--text1)">Kurious is ready to deploy in days and improves with every query.</strong></div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════ MARKETING STRATEGY ══════════════════ -->
+    <div class="panel" id="panel-mkt">
+      <div class="section-header">
+        <div class="section-eyebrow">Marketing Strategy · March 2026</div>
+        <div class="section-title">Category Creation +<br>Founder-Led Flywheel</div>
+        <div class="section-sub">Not a funnel. Not PLG. Not ABM. The framework that actually works for a B2B AI company at this stage with a genuinely new product.</div>
+      </div>
+
+      <div class="grid2" style="margin-bottom:32px">
+        <div class="card card-cyan">
+          <div class="card-label">Why Category Creation</div>
+          <div class="card-title" style="margin-bottom:8px">Create the category.<br>Own the category.</div>
+          <div class="card-body">Kurious is not an AI search tool. It is not a RAG platform. It is an <strong style="color:var(--cyan)">Organisational Intelligence Engine</strong> — a category that doesn't exist yet. When you create a category, you don't compete. You lead.<br><br>Like Salesforce owns CRM. Like Slack owns team communication. Kurious owns Organisational Intelligence.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Why Founder-Led Flywheel</div>
+          <div class="card-title" style="margin-bottom:8px">Momentum, not refilling.</div>
+          <div class="card-body">Unlike a funnel you must constantly refill, the flywheel builds momentum — each rotation is easier and faster than the last.<br><br>Kunal and Nirmit have the credibility. Enterprise buyers buy from people they trust. Founder content outperforms company content <strong style="color:var(--text1)">10:1 on LinkedIn</strong>.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">What's Actually Working Right Now</div>
+      <div class="layer-stack" style="margin-bottom:32px">
+        <div class="layer">
+          <div class="layer-num" style="background:var(--cyan-dim);color:var(--cyan)">★</div>
+          <div>
+            <div class="layer-title">Founder-Led LinkedIn — Highest ROI</div>
+            <div class="layer-sub">Specific, opinionated posts: "Here is something I believe that most people disagree with." Real failures, real insights. Not announcements.</div>
+          </div>
+        </div>
+        <div class="layer">
+          <div class="layer-num">2</div>
+          <div>
+            <div class="layer-title">Demo-Led Growth</div>
+            <div class="layer-sub">A demo so compelling that sharing it is the primary acquisition channel. Every Kurious answer should be shareable — when a user shares it with a colleague, the colleague sees Kurious working.</div>
+          </div>
+        </div>
+        <div class="layer">
+          <div class="layer-num">3</div>
+          <div>
+            <div class="layer-title">Dark Social — Most Underrated</div>
+            <div class="layer-sub">Most B2B purchasing decisions happen in Slack, WhatsApp, email forwards — invisible to analytics. Engineer for it: content people forward privately, case studies with real numbers.</div>
+          </div>
+        </div>
+        <div class="layer">
+          <div class="layer-num">4</div>
+          <div>
+            <div class="layer-title">Benchmark Marketing</div>
+            <div class="layer-sub">"We ran 100 cross-agency queries through GPT-4o, Gemini, and Kurious. Here are the results." The NJ demo already proves this works.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">90-Day Plan</div>
+      <div class="timeline" style="margin-bottom:32px">
+        <div class="tl-item">
+          <div class="tl-dot active">W1</div>
+          <div class="tl-content">
+            <div class="tl-label">Weeks 1–2 · Foundation</div>
+            <div class="tl-title">Lock the message before distributing it</div>
+            <div class="tl-body">Finalise "Organisational Intelligence Engine" positioning · Update aintropy.ai · Write category creation post · Prepare demo script for consulting vertical</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">W3</div>
+          <div class="tl-content">
+            <div class="tl-label">Weeks 3–4 · Founder Content</div>
+            <div class="tl-title">Kunal 3×/week · Nirmit 2×/week</div>
+            <div class="tl-body">Kunal: perception vs seeing thesis · NJ data findings · The knowledge problem nobody asks about<br>Nirmit: Why RAG alone isn't enough · Behind the build engineering insight</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">W5</div>
+          <div class="tl-content">
+            <div class="tl-label">Weeks 5–6 · Proof Distribution</div>
+            <div class="tl-title">NJ demo blog live + newsletter submissions</div>
+            <div class="tl-body">Publish NJ Open Data blog · Submit to The Batch, Import AI, Last Week in AI · Demo video on LinkedIn · HuggingFace benchmark results</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">W7</div>
+          <div class="tl-content">
+            <div class="tl-label">Weeks 7–8 · First Conversations</div>
+            <div class="tl-title">Warm outreach to engaged people</div>
+            <div class="tl-body">10 target companies in consulting + legal · Reach out to people who engaged meaningfully with content · "Bring Your Data" landing page live</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot active">W9</div>
+          <div class="tl-content">
+            <div class="tl-label">Weeks 9–12 · First Pilot</div>
+            <div class="tl-title">Real enterprise customer — 2 weeks</div>
+            <div class="tl-body">Pilot running with daily monitoring · Draft case study during pilot, not after · Prepare case study template so it's ready the moment the pilot ends</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">Channel Strategy</div>
+      <div class="table-wrap" style="margin-bottom:32px">
+        <table>
+          <thead><tr><th>Channel</th><th>Owner</th><th>Frequency</th><th>What</th></tr></thead>
+          <tbody>
+            <tr><td>LinkedIn (Kunal)</td><td><span class="channel-owner">Kunal</span></td><td>3×/week</td><td>Thesis, insights, proof, behind-the-build</td></tr>
+            <tr><td>LinkedIn (Nirmit)</td><td><span class="channel-owner">Nirmit</span></td><td>2×/week</td><td>Technical depth, engineering insights</td></tr>
+            <tr><td>LinkedIn (Company)</td><td><span class="channel-owner">Shivangi</span></td><td>1×/week</td><td>Demo clips, case study teasers, product updates</td></tr>
+            <tr><td>X / Twitter</td><td><span class="channel-owner">Kunal</span></td><td>Daily</td><td>Short takes, reactions to AI news, demo clips</td></tr>
+            <tr><td>Technical newsletters</td><td><span class="channel-owner">Shivangi</span></td><td>Monthly</td><td>Submit blog posts and benchmarks</td></tr>
+            <tr><td>HuggingFace</td><td><span class="channel-owner">Nirmit</span></td><td>Per benchmark</td><td>Leaderboards, model evals, technical results</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="h2" style="color:var(--red)">What Kurious Should NOT Do</div>
+      <div class="grid2">
+        <div class="card" style="border-color:rgba(239,68,68,0.2)">
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:10px">
+            <li style="display:flex;gap:10px;font-size:13.5px;color:var(--text2)"><span style="color:var(--red)">✗</span> No paid advertising — ICP too narrow, no case study yet</li>
+            <li style="display:flex;gap:10px;font-size:13.5px;color:var(--text2)"><span style="color:var(--red)">✗</span> No content marketing agency — generic AI content damages the brand</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color:rgba(239,68,68,0.2)">
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:10px">
+            <li style="display:flex;gap:10px;font-size:13.5px;color:var(--text2)"><span style="color:var(--red)">✗</span> No spray-and-pray outreach — 10 personalised &gt; 1,000 generic</li>
+            <li style="display:flex;gap:10px;font-size:13.5px;color:var(--text2)"><span style="color:var(--red)">✗</span> No events yet — message is not locked, spend budget on pilots</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════ FLYWHEEL ══════════════════ -->
+    <div class="panel" id="panel-flywheel">
+      <div class="section-header">
+        <div class="section-eyebrow">Marketing Flywheel · March 2026</div>
+        <div class="section-title">The Self-Reinforcing<br>Growth Machine</div>
+        <div class="section-sub">Each rotation of the flywheel is easier and faster than the last. Unlike a funnel — which you must constantly refill — the flywheel builds momentum.</div>
+      </div>
+
+      <div style="display:flex;gap:48px;align-items:flex-start;margin-bottom:40px;flex-wrap:wrap">
+        <!-- Flywheel visual -->
+        <div style="flex-shrink:0">
+          <div class="flywheel">
+            <div class="flywheel-center">
+              <div class="flywheel-center-text">Kurious<br>Flywheel</div>
+            </div>
+            <!-- nodes positioned around the circle -->
+            <div class="fw-node" style="left:50%;top:8%">Founders tell<br>the story</div>
+            <div class="fw-node" style="left:88%;top:28%">Demo proves<br>the claim</div>
+            <div class="fw-node" style="left:92%;top:62%">Right people<br>see it</div>
+            <div class="fw-node" style="left:70%;top:90%">Inbound<br>conversations</div>
+            <div class="fw-node" style="left:30%;top:90%">Pilot →<br>Customer</div>
+            <div class="fw-node" style="left:8%;top:62%">Case study →<br>Content</div>
+            <div class="fw-node" style="left:12%;top:28%">Category<br>ownership</div>
+          </div>
+          <div style="text-align:center;font-size:12px;color:var(--text4)">Each node feeds the next →</div>
+        </div>
+
+        <!-- Steps detail -->
+        <div style="flex:1;min-width:280px">
+          <div class="h2" style="margin-bottom:20px">How Each Step Works</div>
+          <div class="timeline">
+            <div class="tl-item" style="padding:12px 0">
+              <div class="tl-dot active" style="width:32px;height:32px;font-size:10px">①</div>
+              <div class="tl-content" style="padding-top:4px">
+                <div class="tl-title" style="font-size:13px">Founders tell the story</div>
+                <div class="tl-body" style="font-size:12px">Kunal + Nirmit post specific, opinionated content 5×/week on LinkedIn and X. The "perception vs seeing" thesis. The NJ data finding. The knowledge problem nobody is solving.</div>
+              </div>
+            </div>
+            <div class="tl-item" style="padding:12px 0">
+              <div class="tl-dot" style="width:32px;height:32px;font-size:10px">②</div>
+              <div class="tl-content" style="padding-top:4px">
+                <div class="tl-title" style="font-size:13px">Demo proves the claim</div>
+                <div class="tl-body" style="font-size:12px">NJ demo: 85M records, 23 agencies, same query — GPT fails, Kurious answers. A side-by-side that sells itself. This is the most powerful proof asset the company has.</div>
+              </div>
+            </div>
+            <div class="tl-item" style="padding:12px 0">
+              <div class="tl-dot" style="width:32px;height:32px;font-size:10px">③</div>
+              <div class="tl-content" style="padding-top:4px">
+                <div class="tl-title" style="font-size:13px">Right people see it</div>
+                <div class="tl-body" style="font-size:12px">Content reaches enterprise AI buyers, heads of legal, strategy VPs. Not everyone — the right people. Technical newsletters amplify reach to 50K qualified readers.</div>
+              </div>
+            </div>
+            <div class="tl-item" style="padding:12px 0">
+              <div class="tl-dot" style="width:32px;height:32px;font-size:10px">④</div>
+              <div class="tl-content" style="padding-top:4px">
+                <div class="tl-title" style="font-size:13px">Inbound conversations</div>
+                <div class="tl-body" style="font-size:12px">People who have seen the content for 5+ weeks convert at 5–10× the rate of cold outreach. Warm conversations, not cold pitches.</div>
+              </div>
+            </div>
+            <div class="tl-item" style="padding:12px 0">
+              <div class="tl-dot active" style="width:32px;height:32px;font-size:10px">⑤</div>
+              <div class="tl-content" style="padding-top:4px">
+                <div class="tl-title" style="font-size:13px">Pilot → Customer</div>
+                <div class="tl-body" style="font-size:12px">2-week pilot. One department. One use case. We measure time-to-answer before and after. Zero risk — data never leaves. Pilot succeeds → first paying customer.</div>
+              </div>
+            </div>
+            <div class="tl-item" style="padding:12px 0">
+              <div class="tl-dot" style="width:32px;height:32px;font-size:10px">⑥</div>
+              <div class="tl-content" style="padding-top:4px">
+                <div class="tl-title" style="font-size:13px">Case study → Content</div>
+                <div class="tl-body" style="font-size:12px">Case study written with the customer. Specific numbers. Real quotes. Gets shared in executive Slack channels. Opens the next 5 doors. Flywheel spins faster.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h2">The Long Game — Category Ownership Signal</div>
+      <div class="big-quote" style="font-size:16px">
+        When competitors start describing themselves in relation to Kurious — "like Kurious but for X" — category creation has worked.<br>
+        <span style="color:var(--text3);font-weight:400;font-size:13px;display:block;margin-top:8px">When competitors define themselves by reference to you, you own the category.</span>
+      </div>
+
+      <div class="grid3" style="margin-top:24px">
+        <div class="metric-card">
+          <div class="metric-val" style="font-size:24px">Wks 1–4</div>
+          <div class="metric-label">Track: founder post impressions — are the right people seeing this?</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val" style="font-size:24px">Wks 5–8</div>
+          <div class="metric-label">Track: demo views — how many qualified people are trying Kurious?</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val" style="font-size:24px">Wks 9–12</div>
+          <div class="metric-label">Track: pilot conversations started — how many real enterprise discussions?</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /shell -->
+
+<script>
+  function switchTab(id) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelector('[data-tab="' + id + '"]').classList.add('active');
+    document.getElementById('panel-' + id).classList.add('active');
+    document.querySelector('.content').scrollTop = 0;
+  }
+
+  function toggleObj(el) {
+    el.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
